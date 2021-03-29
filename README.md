@@ -35,12 +35,11 @@ send_tx(coin, account, to, amount)
 
 ERRORS:
 
-Although I am 95%  sure my functions are write I just could not get them to work to send the transactions, found below are the errors I received;
+Although I am 95%  sure my functions are right I just could not get them to work to send the transactions, found below are the errors I received;
 
 send_tx(BTCTEST, btc_account, "mn6u4DZQX2RhhuLfuqVNoKaQKkiiwFebzi", 1)
-![Screenshot 2021-03-29 210620](https://user-images.githubusercontent.com/73380920/112824628-83965280-90d6-11eb-8dff-1c692feca739.png)
+![Screenshot 2021-03-29 213625](https://user-images.githubusercontent.com/73380920/112824916-db34be00-90d6-11eb-860b-0b5b70839d52.png)
+Here the create_tx() functoin wasn't working either therefore a json object was not being returned to parse into the send_tx() function. When I set the amount as 1 BTC however I got a not enough money error :s
 
 send_tx(ETH, eth_account, "0x26465ce54039f2537c0b79b2485D1507C6A276eA", 5000000)
 ![Screenshot 2021-03-29 210231](https://user-images.githubusercontent.com/73380920/112824641-86914300-90d6-11eb-85aa-0097e0b6f5b9.png)
-
-
