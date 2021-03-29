@@ -1,0 +1,16 @@
+To run this wallet file we'll need two libraries; bit.py and web3.py as well as the hd-wallet-derive repo installed.
+
+Please install bit and web3 into your environment with;
+
+    * pip install bit
+
+    * pip install web3
+
+To install hd-wallet-derive clone into this directory using; 
+    * git clone https://github.com/dan-da/hd-wallet-derive
+
+Then install via; 
+    * cd hd-wallet-derive
+    * curl https://getcomposer.org/installer -o installer.php
+    * php installer.php
+    * php composer.phar install

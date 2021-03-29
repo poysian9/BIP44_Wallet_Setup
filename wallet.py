@@ -7,27 +7,28 @@ from web3 import Web3
 import bit
 from web3.middleware import geth_poa_middleware
 from bit.network import NetworkAPI
-
+from eth_account import Account
+from bit import PrivateKeyTestnet
 
 w3 =Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
 w3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
-
-
 load_dotenv()
+
 MNEMONIC = os.getenv('MNEMONIC')
 
 
 def derive_wallets (coin, numderive):
 
-    command = 'php derive -g --mnemonic=MNEMONIC --cols=path,address,privkey,pubkey --format=json --numderive=numderive --coin=coin ' 
+    command = f'php derive -g --mnemonic="{MNEMONIC}" --cols=path,address,privkey,pubkey --format=jsonpretty --numderive={numderive} --coin={coin}' 
     
     p = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     output,_ = p.communicate()
     return json.loads(output)
     
-    
-# derive_wallets(ETH, 3)   
+# print(derive_wallets(ETH, 2))
+# print(derive_wallets(BTCTEST, 2))
+
 coins = {
     'eth' : derive_wallets(ETH, 5),
     'btc-test' : derive_wallets(BTCTEST, 5)
@@ -49,34 +50,38 @@ eth_account = priv_key_to_account(ETH,eth_pk)
 
 btc_account = priv_key_to_account(BTCTEST,btc_pk)
 
-git submodule add https://github.com/dan-da/hd-wallet-derive hd-wallet-derive
+# print(eth_account)
+# print(btc_account)
 
-def create_tx(coin, account, to, amount):
+def create_tx (coin, account, to, amount):
     if coin == ETH:
         gasEstimate = w3.eth.estimateGas(
             {"from": account.address, "to": to, "value" :amount}
         )
         return {
             "from": account.address,
-            "to": recipient,
+            "to": to,
             "value": amount,
             "gasPrice": w3.eth.gasPrice,
             "gas": gasEstimate,
             "nonce": w3.eth.getTransactionCount(account.address),
-            "chainID": w3.eth.chainID
+            "chainId": w3.eth.chain_id
 
         }
     elif coin == BTCTEST:
         PrivateKeyTestnet.prepare_transaction(account.address, [(to, amount, BTC)])
 
-def send_tx(coin, account, to, amount):
+def send_tx (coin, account, to, amount):
     if coin == ETH:
         tx = create_tx(coin, account, to, amount)
         signed_tx = account.sign_transaction(tx)
         return w3.eth.sendRawTransaction(signed_tx.rawTransaction)
         # return result.hex()
     elif coin == BTCTEST:
-        tx= create_tx(coin,account,recipient,amount)
+        tx= create_tx(coin, account, to, amount)
         signed_tx = account.sign_transaction(tx)
         return NetworkAPI.broadcast_tx_testnet(signed_tx)       
+        # return result.hex()
         
+# send_tx(BTCTEST, btc_account, "mn6u4DZQX2RhhuLfuqVNoKaQKkiiwFebzi", 1)
+# send_tx(ETH, eth_account, "0x26465ce54039f2537c0b79b2485D1507C6A276eA", 5000000)
